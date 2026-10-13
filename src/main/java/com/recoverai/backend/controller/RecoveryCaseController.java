@@ -1,6 +1,7 @@
 
 package com.recoverai.backend.controller;
 
+import com.recoverai.backend.entity.AuthUser;
 import com.recoverai.backend.entity.Payment;
 import com.recoverai.backend.entity.RecoveryCase;
 import com.recoverai.backend.repository.PaymentRepository;
@@ -73,7 +74,8 @@ public class RecoveryCaseController {
 
         RecoveryCase recoveryCase = new RecoveryCase();
         recoveryCase.setPayment(payment);
-        recoveryCase.setOwner(users.findById(access.currentUserId()).orElseThrow());
+        AuthUser owner = (payment.getOwner() != null) ? payment.getOwner() : users.findById(access.currentUserId()).orElseThrow();
+        recoveryCase.setOwner(owner);
         recoveryCase.setRevenueAtRisk(payment.getAmount());
         recoveryCase.setRiskLevel(calculateRiskLevel(payment.getAmount()));
         recoveryCase.setRiskReason(
